@@ -1,24 +1,24 @@
-DataNode Volumes Rebalancing tool for Apache Hadoop HDFS
+DataNode Volumes Rebalancing tool for Apache Hadoop 2.6+ HDFS
 ===============
-
-
-**WARNING**: If you're running Hadoop 2.6+, this tool is no longer working! See [HDFS-6482](https://issues.apache.org/jira/browse/HDFS-6482) for more details.
-====
-
-
-
-
 
 This project aims at filling the gap with [HDFS-1312](https://issues.apache.org/jira/browse/HDFS-1312) & family: when a hard drive dies on a Datanode and gets replaced, there is not real way to move blocks from most used hard disks to the newly added -- and thus empty.
 
 [HDFS-1804](https://issues.apache.org/jira/browse/HDFS-1804) is a really good addition that allows the DataNode to choose the least used hard drive, but for new blocks only. Balancing existing blocks is still something missing and thus the main focus of this project.
+
+## Attention
+
+If you use Hadoop2.6 or Hadoop2.7, this script `org.apache.hadoop.hdfs.server.datanode.VolumeBalancerNew` is suitable for you to rebalance volume on Datanode.
+
+If you use Hadoop2.5 or the following version, you should use script `org.apache.hadoop.hdfs.server.datanode.VolumeBalancer`, or you can use [volumn-balancer](https://github.com/killerwhile/volume-balancer) by bperroud. this script is forked from him. See [HDFS-6482](https://issues.apache.org/jira/browse/HDFS-6482) for more details.
+
+If you use Hadoop3.0, you no need this! Because it has the `hdfs diskbalancer` command to rebalance data across multiple disks of a Datanode.
 
 # Usage
 
 ## Using hadoop jar
 
 ```
-$ hadoop jar /opt/volume-balancer/lib/volume-balancer-<version>.jar org.apache.hadoop.hdfs.server.datanode.VolumeBalancer [-threshold=0.1] [-concurrency=1]
+$ hadoop jar /opt/volume-balancer/lib/volume-balancer-<version>.jar org.apache.hadoop.hdfs.server.datanode.VolumeBalancerNew [-threshold=0.1] [-concurrency=1] [-dirs=128]
 ```
 
 ## Using plain java
@@ -26,7 +26,7 @@ $ hadoop jar /opt/volume-balancer/lib/volume-balancer-<version>.jar org.apache.h
 (But still ``hadoop classpath`` for automatic jars detection)
 
 ```
-$ java -cp /opt/volume-balancer/lib/volume-balancer-<version>.jar:/path/to/hdfs-site.xml/parentDir:$(find $(hadoop classpath | sed -e "s/:/ /g") -maxdepth 0 2>/dev/null | paste -d ":" -s -) org.apache.hadoop.hdfs.server.datanode.VolumeBalancer [-threshold=0.1] [-concurrency=1]
+$ java -cp /opt/volume-balancer/lib/volume-balancer-<version>.jar:/path/to/hdfs-site.xml/parentDir:$(find $(hadoop classpath | sed -e "s/:/ /g") -maxdepth 0 2>/dev/null | paste -d ":" -s -) org.apache.hadoop.hdfs.server.datanode.VolumeBalancerNew [-threshold=0.1] [-concurrency=1] [-dirs=128]
 ```
 
 ## With CDH
@@ -34,7 +34,7 @@ $ java -cp /opt/volume-balancer/lib/volume-balancer-<version>.jar:/path/to/hdfs-
 Cloudera is splitting the configuration files and store in _/etc/hadoop/conf_ only strict minimum. ``dfs.datanode.data.dir`` for instance is not found in _/etc/hadoop/conf/hdfs-site.xml_ so a workaround needs to be put in place. Moreover, once you found the proper _/var/run/cloudera-scm-agent/process_ folder to add in your classpath, you need to skip the _log4j.properties_ file shipped otherwise you'll start a custom proprietary logger. A helper script is given in _src/main/scripts_ folder, which run the balancer in CDH distributions.
 
 ```
-$ /opt/volume-balancer/bin/cdh-balance-local-volumes.sh [-threshold=0.1] [-concurrency=1]
+$ /opt/volume-balancer/bin/cdh-balance-local-volumes.sh [-threshold=0.1] [-concurrency=1] [-dirs=128]
 ```
 
 # Parameters
@@ -53,11 +53,17 @@ Default value: 1 (no concurrency)
 Define how many threads are concurrently reading (from different disks) and writing to the least used disk(s).
 Advised value is 2, increasing the concurrency does not *always* increase the overall throughput.
 
+## dirs
+
+Default value: 128
+
+Define how many dirs we can rebalance, from [HDFS-6482](https://issues.apache.org/jira/browse/HDFS-6482) we know the two-level directory structure has the most 256 * 256 dirs, use this we can limit the rebalanced dirs to dirs * 256 on per volume.
+This value should not greater than 256, oherwise it will use default value instead.
+
 # How it works
 
 The script take a random ``subdir*`` leaf (i.e. without other subdir inside) from the most used partition
-and move it to a random ``subdir*`` (not exceeding ``DFSConfigKeys.DFS_DATANODE_NUMBLOCKS_KEY``) of the least used partition.
-The ``subdir`` keyword comes from ``DataStorage.BLOCK_SUBDIR_PREFIX``
+and move it to a same subdir of the least used partition
 
 The script is doing pretty good job at keeping the bandwidth of the least used hard drive maxed out using
 ``FileUtils#moveDirectory(File, File)`` and a dedicated ``j.u.c.ExecutorService`` for the copy. Increasing the

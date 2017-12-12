@@ -291,7 +291,7 @@ public class VolumeBalancerNew {
                 // get parent subdir: subdir0 ~ subdir255
                 File firstSubdir = getRandomSubdir(mostUsedBlockSubdir);
                 if (firstSubdir != null) {
-                    // get children subdir: subdir0 ~ subdir255 / subdir0 ~ subdir255
+                    // get children subdir: {subdir0 ~ subdir255} / {subdir0 ~ subdir255}
                     tmpMostUsedBlockSubdir = getRandomSubdir(firstSubdir);
                     // if already moved, we should't do it again
                     if (tmpMostUsedBlockSubdir != null && movedSubdirs.add(tmpMostUsedBlockSubdir.getPath())) {
