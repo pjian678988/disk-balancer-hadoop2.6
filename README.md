@@ -1,7 +1,7 @@
 DataNode Volumes Rebalancing tool for Apache Hadoop 2.6+ HDFS
 ===============
 
-[中文](Chinese.md)
+[中文README](Chinese.md)
 
 This project aims at filling the gap with [HDFS-1312](https://issues.apache.org/jira/browse/HDFS-1312) & family: when a hard drive dies on a Datanode and gets replaced, there is not real way to move blocks from most used hard disks to the newly added -- and thus empty.
 

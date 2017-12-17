@@ -42,7 +42,7 @@
 
 此项目fork自bperroud的 [volumn-balancer](https://github.com/killerwhile/volume-balancer.git)，由于原项目只提供了Hadoop2.6以下版本的DN磁盘平衡 `VolumeBalancer`，在此基础上我增加了Hadoop2.6及以上版本的磁盘平衡 `VolumeBalancerNew`，目前在生产环境使用良好，原磁盘使用率92%，平衡后69%，如下
 
-![diskbalancer | left](D:\jianjin.qin\compile\disk-balancer-hadoop2.6\diskbalancer.png)
+![diskbalancer | left](diskbalancer.png)
 
 本项目包含了原项目的脚本，但是Readme做了改动，如果是Hadoop2.6以下版本，请直接查看原项目的 [Readme](https://github.com/killerwhile/volume-balancer/blob/master/README.md)
 
