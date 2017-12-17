@@ -1,6 +1,8 @@
 DataNode Volumes Rebalancing tool for Apache Hadoop 2.6+ HDFS
 ===============
 
+[中文](Chinese.md)
+
 This project aims at filling the gap with [HDFS-1312](https://issues.apache.org/jira/browse/HDFS-1312) & family: when a hard drive dies on a Datanode and gets replaced, there is not real way to move blocks from most used hard disks to the newly added -- and thus empty.
 
 [HDFS-1804](https://issues.apache.org/jira/browse/HDFS-1804) is a really good addition that allows the DataNode to choose the least used hard drive, but for new blocks only. Balancing existing blocks is still something missing and thus the main focus of this project.
@@ -9,7 +11,7 @@ This project aims at filling the gap with [HDFS-1312](https://issues.apache.org/
 
 If you use Hadoop2.6 or Hadoop2.7, this script `org.apache.hadoop.hdfs.server.datanode.VolumeBalancerNew` is suitable for you to rebalance volume on Datanode.
 
-If you use Hadoop2.5 or the following version, you should use script `org.apache.hadoop.hdfs.server.datanode.VolumeBalancer`, or you can use [volumn-balancer](https://github.com/killerwhile/volume-balancer) by bperroud. this script is forked from him. See [HDFS-6482](https://issues.apache.org/jira/browse/HDFS-6482) for more details.
+If you use Hadoop2.5 or the following version, you should use script `org.apache.hadoop.hdfs.server.datanode.VolumeBalancer`, or you can use [volumn-balancer](https://github.com/killerwhile/volume-balancer) by bperroud. this script is forked from him. Difference between the two scripts, see [HDFS-6482](https://issues.apache.org/jira/browse/HDFS-6482) for more details.
 
 If you use Hadoop3.0, you no need this! Because it has the `hdfs diskbalancer` command to rebalance data across multiple disks of a Datanode.
 
