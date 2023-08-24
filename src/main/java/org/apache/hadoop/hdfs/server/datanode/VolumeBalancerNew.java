@@ -365,7 +365,7 @@ public class VolumeBalancerNew {
     
     private static String getBlockPoolID(Configuration conf) throws IOException {
 
-        final Collection<URI> namenodeURIs = DFSUtil.getNsServiceRpcUris(conf);
+        final Collection<URI> namenodeURIs = DFSUtil.getInternalNsRpcUris(conf);
         URI nameNodeUri = namenodeURIs.iterator().next();
 
         final NamenodeProtocol namenode = NameNodeProxies.createProxy(conf, nameNodeUri, NamenodeProtocol.class)

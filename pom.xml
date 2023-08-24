@@ -29,11 +29,11 @@
     </licenses>
 
     <properties>
-        <hadoop.version>2.0.0-cdh4.5.0</hadoop.version>
+        <hadoop.version>2.7.3.2.6.2.14-5</hadoop.version>
         <commons.io.version>2.1</commons.io.version>
         <log4j.version>1.2.17</log4j.version>
 
-        <compile.source.version>1.6</compile.source.version>
+        <compile.source.version>1.8</compile.source.version>
 
         <maven.compiler>3.1</maven.compiler>
         <maven.rpm.plugin.version>2.1-alpha-3</maven.rpm.plugin.version>
@@ -77,16 +77,18 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler}</version>
+                <version>3.8.0</version>
                 <configuration>
                     <source>${compile.source.version}</source>
                     <target>${compile.source.version}</target>
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resources.version}</version>
+                <version>2.7</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -106,69 +108,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>rpm-maven-plugin</artifactId>
-                <version>${maven.rpm.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>attached-rpm</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <copyright>${rpm.copyright}</copyright>
-                    <distribution>${rpm.distribution}</distribution>
-                    <name>${rpm.appname}</name>
-                    <group>${rpm.group}</group>
-                    <needarch>${rpm.targetArch}</needarch>
-                    <classifier>${rpm.targetos}.${rpm.targetArch}</classifier>
-                    <defineStatements>
-                        <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
-                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
-                    </defineStatements>
-                    <mappings>
-                        <mapping>
-                            <directory>${rpm.path}</directory>
-                            <filemode>0755</filemode>
-                            <username>${rpm.username}</username>
-                            <groupname>${rpm.groupname}</groupname>
-                        </mapping>
-                        <mapping>
-                            <directory>${rpm.path}/bin</directory>
-                            <directoryIncluded>false</directoryIncluded>
-                            <filemode>0755</filemode>
-                            <username>${rpm.username}</username>
-                            <groupname>${rpm.groupname}</groupname>
-                            <sources>
-                                <source>
-                                    <location>${project.basedir}/target/scripts</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>${rpm.path}/lib</directory>
-                            <recurseDirectories>true</recurseDirectories>
-                            <filemode>0755</filemode>
-                            <username>${rpm.username}</username>
-                            <groupname>${rpm.groupname}</groupname>
-                            <sources>
-                                <source>
-                                    <location>${project.build.directory}/${project.artifactId}-${project.version}.jar</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>${rpm.path}/logs</directory>
-                            <recurseDirectories>true</recurseDirectories>
-                            <filemode>0755</filemode>
-                            <username>${rpm.username}</username>
-                            <groupname>${rpm.groupname}</groupname>
-                        </mapping>
-                    </mappings>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -182,8 +121,8 @@
             </releases>
         </repository>
         <repository>
-            <id>cloudera</id>
-            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+            <id>hortonworks</id>
+            <url>https://repo.hortonworks.com/content/repositories/releases/</url>
         </repository>
     </repositories>
 
